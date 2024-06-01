@@ -19,7 +19,7 @@ for i, pattern in enumerate(patterns[:6]):
     plt.subplot(2, 3, i+1)
     sns.heatmap(pattern, cmap='binary', cbar=False, square=True, xticklabels=False, yticklabels=False)
     plt.title(f'Pattern {i+1}')
-plt.show()
+plt.savefig('figures/input_patterns.png')
 
 noise_level = 0.2
 num_trials = 1000
