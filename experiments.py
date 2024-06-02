@@ -27,10 +27,10 @@ num_trials = 1000
                 
 # %% 実験1: パターンを1つ記憶し、ノイズを15%加えてネットワークを実行
 # ネットワークを作成
-network = HopfieldNetwork(input_shape=(5, 5))
+network1 = HopfieldNetwork(input_shape=(5, 5))
 
 # 1つだけパターンを記憶
-network.train([patterns[0]])
+network1.train([patterns[0]])
 
 # run the network with noise added to the pattern
 mean_similarity = 0.0
@@ -38,7 +38,7 @@ mean_accuracy = 0.0
 
 for i in range(num_trials):
     noisy_pattern = add_noise(patterns[0], noise_level=noise_level)
-    result = network.run(noisy_pattern)
+    result = network1.run(noisy_pattern)
     similarity = np.mean(result == patterns[0])
     mean_similarity += similarity
     mean_accuracy += similarity == 1.0
@@ -53,18 +53,19 @@ print(f'Mean Accuracy: {mean_accuracy}')
 
 # %% 実験2: 記憶するパターンを6種類まで徐々に増やし、ノイズを15%加えてネットワークを実行
 network2 = HopfieldNetwork(input_shape=(5, 5))
-
 mean_similarities = []
 mean_accuracies = []
 
 for i in range(1, 7):
+    np.random.shuffle(patterns)
     network2.train(patterns[:i])
     mean_similarity = 0.0
     mean_accuracy = 0.0
     for j in range(num_trials):
-        noisy_pattern = add_noise(patterns[0], noise_level=noise_level)
+        pattern_idx = np.random.randint(i)
+        noisy_pattern = add_noise(patterns[pattern_idx], noise_level=noise_level)
         result = network2.run(noisy_pattern)
-        similarity = np.mean(result == patterns[0])
+        similarity = np.mean(result == patterns[pattern_idx])
         mean_similarity += similarity
         mean_accuracy += similarity == 1.0
     mean_similarity /= num_trials
@@ -94,9 +95,10 @@ for noise_level in np.linspace(0, 1, 11):
     mean_similarity = 0.0
     mean_accuracy = 0.0
     for j in range(num_trials):
-        noisy_pattern = add_noise(patterns[0], noise_level=noise_level)
+        pattern_idx = np.random.randint(2)
+        noisy_pattern = add_noise(patterns[pattern_idx], noise_level=noise_level)
         result = network3.run(noisy_pattern)
-        similarity = np.mean(result == patterns[0])
+        similarity = np.mean(result == patterns[pattern_idx])
         mean_similarity += similarity
         mean_accuracy += similarity == 1.0
     mean_similarity /= num_trials
@@ -126,9 +128,10 @@ for noise_level in np.linspace(0, 1, 11):
     mean_similarity = 0.0
     mean_accuracy = 0.0
     for j in range(num_trials):
-        noisy_pattern = add_noise(patterns[0], noise_level=noise_level)
+        pattern_idx = np.random.randint(4)
+        noisy_pattern = add_noise(patterns[pattern_idx], noise_level=noise_level)
         result = network4.run(noisy_pattern)
-        similarity = np.mean(result == patterns[0])
+        similarity = np.mean(result == patterns[pattern_idx])
         mean_similarity += similarity
         mean_accuracy += similarity == 1.0
     mean_similarity /= num_trials
@@ -155,13 +158,15 @@ mean_similarities = []
 mean_accuracies = []
 
 for i in range(1, 101):
+    np.random.shuffle(patterns)
     network5.train(patterns[:i])
     mean_similarity = 0.0
     mean_accuracy = 0.0
     for j in range(num_trials):
-        noisy_pattern = add_noise(patterns[0], noise_level=0.15)
+        pattern_idx = np.random.randint(i)
+        noisy_pattern = add_noise(patterns[pattern_idx], noise_level=0.15)
         result = network5.run(noisy_pattern)
-        similarity = np.mean(result == patterns[0])
+        similarity = np.mean(result == patterns[pattern_idx])
         mean_similarity += similarity
         mean_accuracy += similarity == 1.0
     mean_similarity /= num_trials
